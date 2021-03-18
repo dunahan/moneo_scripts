@@ -1,0 +1,58 @@
+------------------------------------------------------------------------------
+LetoScript 101: Variables
+------------------------------------------------------------------------------
+
+-- Variables
+
+We've already looked at files and Fields, which are actually variables signed
+with % and /. The two other types of variables are $ and @, which are scalars
+and lists. Scalars are like the int and string types of NWScript rolled into
+one. Any scalar can be either, and can even be converted back and forth. So
+you don't need to declare its type, just assign it a value:
+
+  $text = 'Hello, world.';
+  print $text;
+  $number = 3;
+  print $number + $number;
+
+  $bob = 'bob.bic';
+  %bob = $bob or die $!;
+  $name = /firstname;
+  print "My name is $name.";
+
+-- Lists
+
+The other type of variable is a list, signed with @. Don't confuse lists with
+Lists. A list variable is a type of variable with multiple values. A List
+Field is a type of Field containing Structs. List variables are constructed
+using parentheses, and accessed using square brackets:
+
+  @colors = ('red', 'green', 'blue');
+  print @colors.count;  # 3
+  print $colors[0];     # red
+  print $colors[1];     # green
+  print $colors[2];     # blue
+  print $colors[3];     # undefined value (warning)
+  $colors[3] = 'white'; # add a new member
+  print @colors;        # redgreenbluewhite
+  print "@colors";      # red green blue white
+  @colors = ();         # clear the list
+
+Note the importance of $ when accessing a member of a list. The value you're
+fetching is actually a scalar, hence the use of $. @foo[0] is not the same as
+$foo[0]. See also: lsdoc hashes, lsdoc attributes
+
+-- Special variables
+
+LetoScript has a number of special variables. You don't need to know all of
+them, they just make life easier:
+
+  %_    File: the current file handle.
+  %~    File: the current resource in a for %ERF loop.
+  /@    Field: the root Struct.
+  /~    Field: the current context in a for /LIST loop.
+  $_    Scalar: the "understood" value (varies greatly by context).
+  $!    Scalar: most recent error.
+  @_    List: the arguments passed to a subroutine.
+
+Next: lsdoc 101 quotes
