@@ -1,0 +1,45 @@
+------------------------------------------------------------------------------
+LetoScript 101: Quotes
+------------------------------------------------------------------------------
+This is a common sticking point, so it's worth covering right here at the
+start. In NWScript, there's just one way to quote strings: double-quotes. In
+LetoScript, we have single quotes, double quotes, and even functions that act
+likes single quotes and double quotes, in case you can't or don't want to use
+the symbols themselves.
+
+Single quotes are the simplest kind of quote, and should be your default
+choice when in doubt. Single quotes don't do anything special. They give you
+exactly the literal text inside of them. If you need a single quote inside a
+single-quoted string, use \'. The only time single quotes are a bad idea is in
+NWNX-Leto, where you should use q instead.
+
+Double quotes will interpolate their contents, which means variables are
+expanded, and escape sequences like \n are recognized. Interpolation is
+convenient when you have big composite strings, but can be a hassle if your
+string has any \ or / in it, because they both get interpolated.
+
+The q and qq functions simulate single-quotes and double-quotes, respectively.
+Both are very important functions to understand for NWNX-Leto, but for now,
+just use '' and "" while you learn in Moneo.
+
+Examples:
+
+  # No interpolation:
+  print 'Today\'s $10 word is: "interpolation".';
+
+  # \ is interpolated for special characters.
+  # \n is newline, \t is tab, \" is a double-quote,
+  # \\ is the backslash, \/ is the slash:
+  print "Two lines\nof text.";
+  print "Some \"double quotes\"\tand\t\\ slashes \/\n";
+
+  # / is interpolated for Fields.
+  print "My name is /firstname /lastname.\n";
+
+  # $ is interpolated for scalar variables.
+  $vaultpath = 'C:\NWN\servervault';
+  %bic = "$vaultpath\\$playername\\$file" or die $!;
+
+Lots more information at lsdoc strings.
+
+Next: lsdoc 101 comments
