@@ -1,0 +1,107 @@
+------------------------------------------------------------------------------
+LetoScript 101: Logic
+------------------------------------------------------------------------------
+Here's a comparison of an if else construct in NWScript and LetoScript:
+
+  // NWScript:
+  if (num_snakes > 10) {
+    // do something...
+  } else if (num_snakes > 1) {
+    // do something else...
+  } else {
+    // if all else fails...
+  }
+
+  # LetoScript:
+  if ($num_snakes > 10) {
+    # do something...
+  } elsif ($num_snakes > 1) {
+    # do something else...
+  } else {
+    # if all else fails...
+  }
+  
+  Of course the variables are using $, but the big difference is that else if
+has become elsif.
+
+You can skip the braces for simplified if statements in NWScript. You can
+accomplish the same in LetoScript by placing if at the end of the statement
+(so it reads more like English):
+
+  // NWScript:
+  if (num_snakes > 10) SendMessageToPC(oPC, "Too many snakes!");
+
+  # LetoScript:
+  print 'Too many snakes!' if $num_snakes > 10;
+
+The parentheses for the if statement are optional in this particular case.
+(When using braces, they're required.) Also, you can't write an if else or if
+elsif this way, it's only a shortcut for one particular condition. You can
+reverse the condition with unless:
+
+  unless ($num_snakes > 10) {
+    print 'We can handle this.';
+  }
+  print 'We can handle this.' unless $num_snakes > 10;
+  
+  -- Truthiness
+
+By the way, a value is only false in LetoScript if it is 0 or an empty string.
+Because strings and numbers are commutive, the string '0' is false! You can
+also use the words true and false themselves, but it's generally redundant to
+compare something against true or false:
+
+  # Instead of:
+  print if $foo == true;
+
+  # Use:
+  print if $foo;
+
+  # Instead of:
+  print if $foo == false;
+
+  # Use:
+  print if !$foo;
+  # Or:
+  print unless $foo;
+  
+  -- Booleans
+
+NWScript uses the two operators && (two ampersands) and || (two pipes) for
+boolean tests. They work exactly the same in LetoScript. Don't get confused by
+the operators &, |, and, or. The first two perform bitwise operations, which
+are handy for using binary numbers as "flags", but are otherwise irrelevant.
+The second two are functionally equivalent to the && || operators, but with
+very low "precedence" (see lsdoc precedence). Literal or is most often seen in
+the statement modifier: or die $!
+
+  false && true;        # False
+  false || true;        # True
+  14 & 5;               # Yields 4 (1110 AND 0101)
+  14 | 5;               # Yields 15 (1110 OR 0101)
+
+  # Execute the statement to the left of and;
+  # if successful, execute the statement to the right:
+  %bob = 'bob.bic' and pl "Hi, my name is /firstname /lastname.";
+
+  # Execute the statement to the left of or;
+  # if unsuccessful, execute the statement to the right:
+  %bob = 'bob.bic' or die $!;
+  
+  -- Equality
+
+One final consideration is that equality is different for strings and numbers,
+hence there are different operators (called stringwise) for strings.
+
+  # Numeric:
+  1 == 1                # Values are the same
+  1 != 2                # Values are not the same
+
+  # Stringwise:
+  'foo' eq 'foo'        # Strings are the same
+  'foo' ne 'bar'        # Strings are not the same
+  'foo' ne 'Foo'        # Neither are these, but...
+  'foo' eqi 'Foo'       # They're the same when case-insensitive
+  'foo' nei 'bar'       # Strings are not the same, even case-insensitive
+
+Next: lsdoc 101 flow
