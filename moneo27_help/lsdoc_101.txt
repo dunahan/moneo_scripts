@@ -1,0 +1,14 @@
+------------------------------------------------------------------------------
+LETOSCRIPT 101
+------------------------------------------------------------------------------
+Read the articles here in the order listed. Start with 'lsdoc 101 syntax':
+  syntax            Based on Perl, but a lot like NWScript
+  files             This is what LetoScript does: it edits files
+  fields            How LetoScript edits GFF data
+  variables         Scalars and lists
+  quotes            Quotation marks, trickier than you may expect!
+  comments          What language would be complete without comments?
+  logic             if-else, and testing for equality
+  flow              Loops: more than just for (i=0; i<10; i++)
+  subroutines       Make your code easier to read, maintain
+  functions         Everything else LetoScript can do
