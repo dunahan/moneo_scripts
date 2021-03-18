@@ -1,0 +1,46 @@
+------------------------------------------------------------------------------
+LetoScript 101: Fields
+------------------------------------------------------------------------------
+
+-- Fields
+
+Once you've got a file open, you probably want to look at or change some
+Fields. If you need a primer on GFF and Fields, go to:
+  http://nwn.bioware.com/developers/
+And see also: info gff, info fields
+
+Just as files have a unique symbol in LetoScript, so too do Fields: the
+(forward) slash. This means Fields actually look a lot like Linux or HTML file
+paths, as seen here:
+
+  %bob = 'bob.bic' or die $!;
+  print /firstname;
+  print /lvlstatlist/[0]/lvlstathitdie;
+  /LastName = 'the Minogon';
+  /LvlStatList/[0]/LvlStatHitDie = 12;
+
+Notice how Fields can be lowercase or "camelcase". LetoScript is case-
+insensitive, use whatever looks better to you.
+
+-- Field syntax
+
+The LvlStatList example may be a little confusing if you're still unaccustomed
+to GFF structure. The [0] in the path indicates Struct 0 (the first Struct) in
+the List named LvlStatList. Likewise, inside that Struct is the Field named
+LvlStatHitDie (among others). Here are the most important parts of the Field
+syntax in LetoScript:
+
+  /@                    # The root (Struct).
+  /[0]                  # The first Field in the file.
+  /LvlStatList/[-1]     # The last Struct in LvlStatList.
+  /LvlStatList/[_]      # Same thing.
+  /$foo                 # Field named by the value of $foo.
+  /{'Placeables List'}  # A Field name with spaces in it.
+
+  # Print a list (printlist) of every single Field's value in the file:
+  pl /@;
+
+  # Print a list of every single Field's name and value in the file:
+  pl %_;
+
+Next: lsdoc 101 variables
