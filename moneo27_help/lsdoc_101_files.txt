@@ -1,0 +1,76 @@
+------------------------------------------------------------------------------
+LetoScript 101: Files
+------------------------------------------------------------------------------
+
+-- Opening Files
+
+LetoScript opens and edits many different kinds of file: GFF, ERF, TLK, 2DA,
+and FPT. The GFF and ERF formats are used with many different extensions: GFF
+can be BIC, GIT, ARE, FAC, IFO, UTI, and many more. ERF can be MOD, HAK, NWM,
+and SAV.
+
+Opening a file in LetoScript is easy. A type of variable called a handle is
+used. Handles are distinguished with a %. (More about variables in a bit.)
+This statement opens a GFF named bob.bic:
+
+  %bob = 'bob.bic';
+
+Simple, right? It's just like assigning a value to a string. LetoScript sees
+that you're using a handle, and understands that you want to use it to open a
+file. But wait: how can you tell the file loaded successfully?
+
+-- or die $!
+
+It's very common to see the apocryphal phrase or die $! tacked onto the end of
+a statement in LetoScript. This tells LetoScript to first try whatever is to
+the left of or, but if it fails, then die (stop running the script) and output
+the value of $!, which is a special variable containing the most recent error
+code generated. Consider:
+
+  %bob = 'bob.bic' or die $!;
+
+To the left of or is the standard method for opening a file. If that fails (if
+the file could not be loaded), then the script dies, and you're told why the
+file could not be opened - thanks to $! getting a hint from the code that
+tried to open bob.bic.
+
+If you don't check, LetoScript won't complain or stop running - but %bob may
+not be valid (if the file couldn't load), so the rest of your script may
+break! For that reason, dying is always a good practice. And there's no XP
+penalty.
+
+-- Saving Files
+
+After you've made changes to a file in LetoScript, you can save it almost the
+same way you opened it:
+
+  %bob = '>';
+
+The ] symbol tells LetoScript you're saving, instead of opening. You can
+specify a new file name after the aligator:
+
+  %bob = '>edited_bob.bic';
+
+If you don't save the file (and just close it), any changes made are lost.
+
+-- Closing Files
+
+There are a couple different ways to close a file. The simplest one is:
+
+  %bob = '';
+
+There's also the close function, if you prefer something that reads more like
+English:
+
+  close %bob;
+
+As you gain insight into the arcane lore of LetoScript, you will discover the
+power of undef. It can also be used to close files, since making a handle
+undefined necessarily closes its contents:
+
+  %bob = undef;
+  undef %bob;
+
+All of them do the same thing.
+
+Next: lsdoc 101 fields
