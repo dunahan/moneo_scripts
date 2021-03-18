@@ -1,0 +1,21 @@
+------------------------------------------------------------------------------
+LetoScript 101: Functions
+------------------------------------------------------------------------------
+By now you should have a fairly strong grasp of the basic language itself. The
+real power in LetoScript is in its modules (libraries) and their functions:
+with them you can add new Fields to a GFF, list the resources in an ERF, look
+up a StringRef in a TLK, even look for the newest BIC file in a servervault
+folder - and quite a bit more, too.
+
+Individual articles are available for every LetoScript function. To see a
+list, use the list utility. To get a basic description of a function, use desc
+(or describe, or explain) and its full name, such as: desc gff.add. You can
+also get an overview of each module (try just desc or desc gff).
+
+Then read a few examples and try playing with the function on your own.
+example gff.add picks up where desc gff.add leaves off.
+
+After you've gained a few levels in your Champion of LetoScript prestige
+class, you may need a refresher on just the syntax of some function. For that,
+use syntax: syntax gff.add (syntax add works too), syntax print, etc.
+
