@@ -1,0 +1,151 @@
+------------------------------------------------------------------------------
+LetoScript 101: Flow
+------------------------------------------------------------------------------
+There are basically two kinds of loop in LetoScript: for and while. for loops
+repeat a set number of times. while loops continue to repeat so long as some
+condition remains true. (do loops aren't implemented yet.)
+
+In addition to the "classic" style that NWScript uses, three other kinds of
+for loop are possible in LetoScript: iterating over a list (an array or a
+hash), iterating over a List (Field), and iterating over some subset of
+resources in an open ERF.
+
+The classic, C style for loop works exactly the same as it does in NWScript,
+just remember to use $ for your variable:
+
+  # C style:
+  for ($i = 0; $i < 10; $i++) {
+    print $i;
+  }
+  # And:
+  for ($i < 10; $i++) { print $i; }
+  # And even:
+  for (; $i < 10 ;) { print $i; $i++; }
+  
+Iterating across a list is sometimes called "foreach" in other languages. The
+syntax is very simple: for (@list). $_ is a copy of the current iteration's
+value (changing it does not affect the list). You can also declare your own
+variable to use instead of $_, so long as you use parentheses. Note that
+several functions can use $_ as a default argument, including print:
+
+  @list = ('red', 'green', 'blue');
+
+  # Using $_
+  for (@list) {
+    print; # same as print $_
+  }
+
+  # Using my own variable
+  for $each (@list) {
+    print $each;
+  }
+
+  # Any list is acceptable, not just an array
+  for (vault 'c:\NWN\servervault', Recursive) {
+    pl;
+  }
+  
+The syntax is similar for stepping through the child Structs of a List.
+Instead of $_, use /~ to access the current Struct in the loop. You can nest
+these loops and /~ will work correctly at different depths:
+
+  for (/LvlStatList) {
+    $level++;
+    pl "Level $level hit points: /~/LvlStatHitDie";
+  }
+
+  for (/{'Creature List'}) {
+    pl "Checking /~/Tag's inventory...";
+    for (/~/ItemList) {
+      pl 'Snake skin found!' if /~/Tag eq 'DS_I_SNAKESKIN';
+    }
+  }
+
+There's also a shortcut syntax to "cascade" through a List, useful when the
+List's Structs each only have one child - FeatList for example:
+
+  for (/FeatList//) {
+    pl; # print the value (Id) of each Feat
+  }
+  
+Iterating through an ERF is a feature unique to LetoScript, and frequently
+used for scripts that need to analyze a module or make global changes that
+would take hours or days by hand. The syntax makes use of literal in, which
+indicates one or more resources in an ERF. See also desc erf.list.
+
+  %mod = 'd:\dungeon.mod' or die $!;
+
+  # Loop over all the GIT resources in %mod:
+  for ('*.git' in %mod) {
+
+    # $_ is the name of the current resource
+    pl "Checking area $_...";
+
+    # Scan the Creature List, and each creature's ItemList:
+    for (/{'Creature List'}) {
+      pl "Checking /~/Tag's inventory...";
+      for (/~/ItemList) {
+        pl 'Snake skin found!' if /~/Tag eq 'DS_I_SNAKESKIN';
+      }
+    }
+  }
+  
+for can be used as a statement modifier, in the same way if can. This is more
+than just a shortcut - the statement is easier to read. This syntax cannot be
+used for C style loops, but can be used for any of the other three types when
+the loop contains only a single statement. The parentheses become optional.
+Here are a few of the examples above, shortened from three lines into one:
+
+  # 3 (or 4) lines:
+  for (@list) {
+    print;
+  }
+  # One-liner:
+  print for @list;
+
+  # Another one:
+  pl for vault 'c:\NWN\servervault', Recursive;
+
+  # Another one:
+  pl for /FeatList//;
+
+Actually, all of these examples can be shortened further, because print
+already performs iteration over its arguments, so print for is redundant -
+just use print (or pl) followed by the list.
+
+Statement modifiers cannot be combined, however; that is, for and if cannot be
+used together on the same line. There is one clever way to work around this
+limitation (knowing it is a prerequisite for the One-Liner Master feat), shown
+in the third example below - see lsdoc ternary.
+
+  # This won't work:
+  pl 'Snake skin found!' if /~/Tag eq 'DS_IT_SNAKESKIN' for /ItemList;
+
+  # This works:
+  for (/ItemList) {
+    pl 'Snake skin found!' if /~/Tag eq 'DS_IT_SNAKESKIN'
+  }
+
+  # An idiomatic masterpiece:
+  /~/Tag eq 'DS_IT_SNAKESKIN' ? pl 'Snake skin found!' : 0 for /ItemList;
+
+Standard while loops are syntactically identical to NWScript, and while can
+also be used as a statement modifier:
+
+  $found = false;
+  $i = 0;
+
+  # Standard:
+  while (!$found && $i < 3)
+  {
+    $found = $colors[$i] eq 'orange';
+    $i++;
+  }
+
+  # Shortcut:
+  $found = $colors[$i++] eq 'orange' while !$found && $i < 4;
+
+As in NWScript, take special care when writing while loops. When executing
+under NWNX-Leto, an infinite loop in LetoScript could lock up the NWN server.
+
+Next: lsdoc 101 subroutines
