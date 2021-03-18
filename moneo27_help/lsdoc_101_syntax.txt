@@ -1,0 +1,22 @@
+------------------------------------------------------------------------------
+LetoScript 101: Syntax
+------------------------------------------------------------------------------
+The LetoScript language is a unique language. It is most like Perl, which
+itself is related to C. Since NWScript is also related to C, LetoScript and
+NWScript are like cousins twice-removed. The really basic syntax in LetoScript
+will probably look very familiar to you.
+
+Things like variables and loops start to look a little different: you'll see $
+and @ in front of variables, and since loops can do things like iterate over
+the Fields in a List, or the resources in an ERF, there are many new ways to
+write a for loop, too.
+
+The function syntax for LetoScript is more relaxed than in NWScript, where
+parentheses are always required, and arguments must be given in order, but the
+differences won't feel alien for long; and since learning all of the functions
+in LetoScript is what will truly take the most time and be most worthwhile,
+the bigger differences elsewhere won't hinder you much. Some of the more
+technical syntax (like arrays and hashes) you may never even need or use at
+all.
+
+Next: lsdoc 101 files
