@@ -1,0 +1,248 @@
+------------------------------------------------------------------------------
+LetoScript 101: Subroutines
+------------------------------------------------------------------------------
+Only recently did this feature emerge in LetoScript, and along with it,
+several subtle changes to the very syntax of the language itself. Hence, the
+discussion of subroutines is about more than just writing reusable functions
+(which you probably won't need for most short scripts), but also about how the
+syntax in general works for calling LetoScript's own methods.
+
+The link between the two is more than just coincidental: LetoScript's internal
+definitions for all its functions uses exactly the same syntax and code
+invoked when you declare or execute your own subroutines. Even the command-
+mode utility syntax will recognize subroutines you have defined, and note them
+as having higher precedence than other modules' methods with the same name.
+(You could write a subroutine named print and it would obscure system.print.
+In the future, there may be a warning produced when you do so.)
+
+Hence the reason why the syntax for declaring a subroutine is somewhat
+complex: flexibility. You can give your arguments names, default values, make
+some of them completely optional, and control the sub's very behavior.
+
+-- Basic use
+
+The simplest way to declare and use a subroutine is by name alone:
+
+  sub foo {
+    pl 'foo.';
+  }
+
+  foo;  # prints 'foo.' (and a newline)
+
+The keyword sub, followed by its name, and a code block (the curly braces)
+indicates you're defining your subroutine. The code block is executed any time
+the sub is invoked.
+
+Invocation merely requires using the name of the subroutine just like you
+would any function. Parantheses aren't used in the example because they aren't
+needed, but we'll cover the exacting details of when they are and are not
+required, further down.
+
+-- Arguments (informal method)
+
+When defining a subroutine using this simple method, you haven't specified how
+many or what kind of arguments it can receive. It can in fact still be given
+arguments, and they're stored in the special-use array @_:
+
+  sub bar {
+    print $_[0] + $_[1] + $_[2];
+  }
+
+  bar 1, 2, 3;  # prints 6
+
+Don't get @_ and $_ confused. In the example above, $_[0] means the first
+element in the array @_. $_ by itself is a different variable, as discussed
+previously in lsdoc 101 flow.
+
+Consider what might happen if you only gave two arguments to bar. The value of
+$_[2] would be "undefined". Addition works on undefined values, though a
+warning will result. Assuming $_[2] will be defined is probably not a good
+idea.
+
+You could use @_.count and a for loop, but a more idiomatic solution is to use
+shift. The shift function removes the first element from a list, and returns
+that element's value. It returns undef if the list is empty.
+
+In a similar vein, using an if statement (or any boolean test) on an array
+itself returns false if the list is empty (or undefined), so we can build a
+very simple while loop as follows:
+
+  sub bar {
+    while (@_) {
+      $i = shift @_;
+      $result += $i;
+    }
+    print $result;
+  }
+
+  bar 2, 3, 4;  # prints 9
+
+Here are two other ways to write the same thing:
+
+  # Shorter - more advanced use of LetoScript:
+  sub bar {
+    while (@_) {
+      $i += shift;
+    }
+    print $i;
+  }
+
+  # Shortest - a one-liner of the previous:
+  sub bar {
+    $i += shift while @_;
+    print $i;
+  }
+
+Here shift is being used without any arguments; so it uses @_ as a default
+argument. Also, no intermediate variable is used - it isn't really needed,
+even though the resulting statement may (at first) look a little strange.
+
+-- Arguments (formal method)
+
+Instead of @_, you can use a more formal definition for your subroutine, which
+is useful if you find you're setting up a lot of variables at the beginning of
+your subroutine using multiple shift statements.
+
+The formal method also imposes calling requirements on the subroutine - if
+your sub requires two parameters, trying to call it with one will result in a
+compile-time error; with three or more results in a warning. (Compile-time
+means before the script even starts running; so the error is discovered even
+if your script never actually reaches the erroneous statement.)
+
+  sub xyzzy($a, $b) {
+    print $a, $b;
+  }
+
+  xyzzy 'foo', 'bar';   # Prints 'foobar'
+  xyzzy 'foo';          # Error!
+  xyzzy 1, 2, 3;        # Prints '12', with a warning
+
+-- Defaults
+
+You can assign default values to your arguments. The argument is no longer
+required - if it isn't supplied, it uses its default value. Consequentially,
+you can't have arguments without default values after arguments with default
+values, or the sub has no way of knowing which args the caller is skipping:
+
+  sub multithree ($a, $b, $c = 2) {
+    print $a * $b * $c;
+  }
+  multithree 1, 2, 3;   # 6
+  multithree 4, 4;      # 32
+
+  sub multifour ($a, $b, $c = 2, $d = 10) {
+    print $a * $b * $c * $d;
+  }
+  multifour 2, 2;       # 80
+
+  sub oops ($a = 1, $b, $c) {
+    print $a + $b + $c;
+  }
+  # Error! Subroutine not accepted.
+
+-- Optionals
+
+You can also make an argument completely optional by separating your arguments
+into two clauses, using a semicolon. Optional arguments (as opposed to
+standard arguments) always have a default value (undef if you don't assign
+one), and must be supplied by name, which is a form of function calling that
+explicitly states arguments and values in key-value pairs, and can list them
+in any arbitrary order:
+
+  sub plugh ($a, $b, $c = 'foo'; $x, $y = 3, $z) {
+
+  }
+  plugh 1, 2, z => 'quux';
+
+In this example, the arguments $a, $b and $c are standard. $c has a default
+value of 'foo'. $x, $y and $z are optional. $x and $z have undef as a default
+value, $y has 3 as a default value. The caller gave $a a value of 1 and $b a
+value of 2. $c uses its default value of 'foo'. $x is undefined, $y is 3, and
+$z is 'quux'. Note that when arguing by name, the name (key) is not case-
+sensitive.
+
+That may seem like a pretty nonsensical example, so consider this actual
+LetoScript function's syntax:
+
+gff.find
+  $name, $value = '*', /root = undef;
+  $matchcase = 0, $type, $lang = -1,
+  $strref, $depth = -1, $target = -1, $haschildren,
+  &match
+
+The function is gff.find, which finds one or more Fields matching several
+possible criteria. The body of those criteria are shown in the extensive list
+of arguments above.
+
+The standard args are $name, $value and /root. Note that the first two are
+scalar args, but /root must be a Field - it won't accept anything else. The
+rest of the args are optional. Some of the optionals have default values, but
+others do not - this makes it possible to distinguish between an arg's default
+value, and "unspecified".
+
+$haschildren, for instance, will only find Fields with children if true, or
+Fields without children if false - but will find both if undefined.
+
+-- Rules for arguments
+
+There are three additional considerations to bear in mind about arguments:
+
+Standard args don't require naming, but optionals do. In the syntax for
+gff.find, /root is a standard arg, with a default value of undef. Why use a
+standard arg with a default value of undef? Because the caller can list its
+standard arguments without names; or in other words, optionals must be argued
+by name:
+
+  pl find 'Feat', 101, /LvlStatList;
+
+The three standard args are simply given in order, and no optionals are used.
+If /root were an optional, it would need to be argued by name:
+
+  pl find 'Feat', 101, root => /LvlStatList;
+
+To be precise: A standard can be argued by name or by value. An optional must
+be argued by name. Arguing by value requires arguments be in order.
+
+Default values must be constant. You cannot declare a sub with an argument
+that has a default value which is not a constant (usually a number or a single-
+quoted string). This includes variables, strings which require interpolation,
+or any statement which cannot be evaluated immediately at compile-time.
+
+If you need this behavior, use undef and insert the logic in the subroutine's
+body instead:
+
+  # This won't work:
+  sub wrong ($a, $b = $a) {
+    print $a * $b;
+  }
+
+  # Do this instead:
+  sub right ($a, $b = undef) {
+    $b = $a unless defined $b;
+    print $a * $b;
+  }
+
+Boolean optionals are true when argued by key. What's this, arguing by name,
+value, and now "key"? Arguing by key is actually just arguing by name, but
+without using => to make a key-value pair. This "syntactic sugar" makes
+boolean optionals (an optional argument treated as either true or false)
+easier to use:
+
+  pl find '*name', 'Bob', MatchCase;
+
+Here gff.find is called with its standard arguments $name and $value, and the
+optional argument $matchcase. It's the same as saying:
+
+  pl find '*name', 'Bob', MatchCase => true;
+
+For another example, consider bic.vault. It has an optional arg $nofullpaths.
+The default behavior of vault is to include full paths in its results. Hence,
+the optional is named to indicate what its effect will be when arguing that
+optional by key. The same for its optional $recursive, which reverses the
+default behavior of searching only in the directory specified:
+
+  pl vault 'c:\NWN\servervault', NoFullPaths, Recursive;
+
+Still under construction...
+
+Next: lsdoc 101 functions
