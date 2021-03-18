@@ -1,0 +1,39 @@
+------------------------------------------------------------------------------
+LetoScript 101: Comments
+------------------------------------------------------------------------------
+You should already be very familiar with comments if you've used NWScript.
+NWScript has two types of comment: // for a single line, and /* */ for multi-
+line. LetoScript supports both of those, plus # as well (Perl-style, same as
+//), and (* *) (Delphi-style, same as /* */), and "block comments", which
+begin and end with *** plus a label on its own line.
+
+  // C style comment. One line.
+  // Another line of comment.
+
+  /* C++ style comment.
+   * Multiple line.
+   Anything // can be anywhere;
+   on any line. The closing star-slash
+   can be on the same line or
+   its own line:
+  */
+
+  # Perl-style comment. One line.
+  # Another line of comment.
+  
+    (* Delphi style comment.
+     Works just the same as /* */,
+     and can even enclose them.
+  *)
+
+  *** Explanation
+  This is a block comment. It begins with *** Explanation on the first line,
+  and continues until *** Explanation appears again on its own line.
+  Everything in the block is a comment.
+  *** Explanation
+
+  print 'Hello, world.';  // Legal comment.
+  print /* Also legal. */ 'Hello, world.';
+  #print 'Hello, world.';  # Remove the first # to uncomment.
+
+Next: lsdoc 101 logic
