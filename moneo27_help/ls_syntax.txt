@@ -1,0 +1,43 @@
+{ TLetoScriptFuncGff }
+
+(*------------------------------------------------------------------------------
+add $name, $value = undef, $type = undef;
+  /copyfrom, $lang, $setifexists
+------------------------------------------------------------------------------*)
+
+(*------------------------------------------------------------------------------
+clear /field = undef
+
+Clears all children of Structs or Lists. On a LocString, clears all strings.
+On a Void, clears all data (length set to 0). Without an arg, clears the
+entire file (the Root). Returns True unless the Field does not exist.
+------------------------------------------------------------------------------*)
+
+(*------------------------------------------------------------------------------
+delete /field, $lang = undef
+
+Delete the Field named. If Lang is given, the Field should be a LocString (or
+a warning occurs), and the matching language is removed.
+------------------------------------------------------------------------------*)
+
+(*------------------------------------------------------------------------------
+find $name, $value = '*', /root = undef;
+  $matchcase = 0, $type, $lang = -1,
+  $strref, $depth = -1, $target = -1, $haschildren,
+  &match
+
+An extensively powerful routine for finding Fields matching very specific
+criteria (even arbitrary), at any point in a GFF.
+------------------------------------------------------------------------------*)
+
+(*------------------------------------------------------------------------------
+replace $name, $value = '*', $setvalue = undef, /root = undef;
+  $matchcase = 0, $type, $lang = -1, $strref,
+  $depth = -1, $target = -1, $haschildren,
+  $settype = 0, $setlang = -1, $setstrref, $delete = 0, $deleteparent = 0,
+  &match
+
+An extension to find, which operates under the implication that a change
+should be made to all matching Fields. This change is indicated by the
+additional parameters supported.
+------------------------------------------------------------------------------*)
