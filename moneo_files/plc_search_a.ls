@@ -12,5 +12,4 @@ for ('*.git' in %mod) {
   }
 }
 
-//%mod = '>';
 close %mod;
