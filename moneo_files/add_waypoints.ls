@@ -11,7 +11,7 @@ for ('_start_.git' in %mod) {
   }
   print "\n";
   
-  # add four Waypoints to WaypointList
+  # add five Waypoints to WaypointList
   $c = 0;
   while ($c ne 4) {
     add /WaypointList, type => gffList unless /WaypointList;
